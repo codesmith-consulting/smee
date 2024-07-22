@@ -39,24 +39,24 @@ random() {
 usage() {
   cat << EOF
 Usage:
-  coast new <project-name>
-  coast gen migration <name>
-  coast gen code <table>
-  coast db <migrate|rollback|create|drop>
+  smee new <project-name>
+  smee gen migration <name>
+  smee gen code <table>
+  smee db <migrate|rollback|create|drop>
 
 Examples:
-  coast new foo
-  coast new another-foo
+  smee new foo
+  smee new another-foo
 
-  coast gen migration create-table-todo     # Creates a new migration file
-  coast gen sql:migration create-table-todo # Creates a new sql migration file
+  smee gen migration create-table-todo     # Creates a new migration file
+  smee gen sql:migration create-table-todo # Creates a new sql migration file
 
-  coast gen code todo                       # Creates a new clj file with handler functions in src/todo.clj
+  smee gen code todo                       # Creates a new clj file with handler functions in src/todo.clj
 
-  coast db migrate                          # runs all migrations found in db/migrations
-  coast db rollback                         # rolls back the latest migration
-  coast db create                           # creates a new database
-  coast db drop                             # drops an existing database
+  smee db migrate                          # runs all migrations found in db/migrations
+  smee db rollback                         # rolls back the latest migration
+  smee db create                           # creates a new database
+  smee db drop                             # drops an existing database
 EOF
   exit 0
 }
@@ -74,9 +74,9 @@ then
     name=$(kebabcase $(lowercase "$2"))
     sanitized=$(snakecase $(lowercase "$2"))
     secret=$(random)
-    echo Downloading a fresh copy of coast...
+    echo Downloading a fresh copy of smee...
     mkdir $2
-    curl -fsSkL https://github.com/coast-framework/template/archive/master.tar.gz > master.tar.gz
+    curl -fsSkL https://github.com/codesmith-consulting/smee-template/archive/master.tar.gz > master.tar.gz
     tar xzf master.tar.gz -C $2 --strip-components 1
     rm master.tar.gz
     cd $2
@@ -95,10 +95,10 @@ then
       fi
     done
 
-    echo "Created a new coast project in directory $2"
+    echo "Created a new smee project in directory $2"
   fi
 else
-  clj -m coast.generators $@
+  clj -m smee.generators $@
 fi
 
 exit 0
