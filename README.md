@@ -1,6 +1,50 @@
 ## What is this?
 
-Coast is a full stack web framework written in Clojure for small teams or solo developers. It uses a relational database and renders HTML on the server without Javascript which allows you to ship your web applications faster.
+Smee is a fork of [Coast](https://github.com/coast-framework/coast) by Sean Walker. It has similar goals to provide an ergonomic Clojure web framework for people who want to ship stuff quickly.
+
+## Status
+
+This project is still very much a work in progress. Coast hasn't had active development for some time but Sean had done some work towards a 1.0 release.
+
+My current plan is to:
+- Upgrade the dependencies and template
+- Modernise some of the technical decisions and dependencies
+- Add better test coverage and split submodules into their own projects. Sean had some work in this regard but I'm more a fan of a monorepo approach.
+- Update all the documentation
+- Release a v1.0
+
+## Quickstart
+
+### Installation
+
+This guide assumes you have Clojure and its dependencies [installed](https://clojure.org/guides/install_clojure).
+
+1. Install the cli script
+
+```bash
+sudo curl -o /usr/local/bin/smee https://raw.githubusercontent.com/codesmith-consulting/smee/master/smee && sudo chmod a+x /usr/local/bin/smee
+```
+
+2. Create a new project
+
+```bash
+sme new myapp && cd myapp
+```
+
+3. Start the server
+
+```base
+make server
+```
+
+This will take you from a fresh coast installation to a working todo list app.
+
+
+## 🚨 Warning 🚨
+
+Everything below here is out of date and needs to updated.
+
+***
 
 ```clojure
 (ns server
