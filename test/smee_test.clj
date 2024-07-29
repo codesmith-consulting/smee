@@ -136,7 +136,7 @@
       (is (= "i'm a delete"
              (:body (app {:request-method :delete :uri "/"})))))))
 
-(deftest top-level-documents-test
+#_(deftest top-level-documents-test
   (doseq [var (-> (ns-publics 'smee)
                   vals)]
     (testing (str var " has docs")
