@@ -108,8 +108,8 @@
 
 
 (defn resource-route [m]
-  (let [{:keys [method route handler]} m]
-    [method route handler]))
+  (let [{:keys [method route handler name]} m]
+    [method route handler name]))
 
 (defn resource
   "Creates CRUD route vectors
@@ -149,7 +149,9 @@
                    (vec (take (- (count ks) 2) ks))
                    ks)
         resource-ks (take-last 1 route-ks)
-        resource-names (map name resource-ks)
+        handler-names (map name resource-ks)
+        handler-name (first handler-names)
+        resource-names (map #(last (string/split % #"\.")) handler-names)
         resource-name (first resource-names)
         route-names (map utils/plural resource-names)
         prefix-ks (drop-last route-ks)
@@ -159,37 +161,44 @@
                         (string/join "/" %))
         resources [{:method :get
                     :route route-str
-                    :handler (keyword resource-name "index")
-                    :name :index}
+                    :handler (keyword handler-name "index")
+                    :name (keyword (str resource-name "-index"))
+                    :action :index}
                    {:method :get
                     :route (str route-str "/build")
-                    :handler (keyword resource-name "build")
-                    :name :build}
+                    :handler (keyword handler-name "build")
+                    :name (keyword (str resource-name "-build"))
+                    :action :build}
                    {:method :get
                     :route (str route-str "/:" resource-name "-id")
-                    :handler (keyword resource-name "view")
-                    :name :view}
+                    :handler (keyword handler-name "view")
+                    :name (keyword (str resource-name "-view"))
+                    :action :view}
                    {:method :post
                     :route route-str
-                    :handler (keyword resource-name "create")
-                    :name :create}
+                    :handler (keyword handler-name "create")
+                    :name (keyword (str resource-name "-create"))
+                    :action :create}
                    {:method :get
                     :route (str route-str "/:" resource-name "-id/edit")
-                    :handler (keyword resource-name "edit")
-                    :name :edit}
+                    :handler (keyword handler-name "edit")
+                    :name (keyword (str resource-name "-edit"))
+                    :action :edit}
                    {:method :put
                     :route (str route-str "/:" resource-name "-id")
-                    :handler (keyword resource-name "change")
-                    :name :change}
+                    :handler (keyword handler-name "change")
+                    :name (keyword (str resource-name "-change"))
+                    :action :change}
                    {:method :delete
                     :route (str route-str "/:" resource-name "-id")
-                    :handler (keyword resource-name "delete")
-                    :name :delete}]
+                    :handler (keyword handler-name "delete")
+                    :name (keyword (str resource-name "-delete"))
+                    :action :delete}]
         resources (if only?
-                   (filter #(not= -1 (.indexOf filter-resources (clojure.core/get % :name))) resources)
+                   (filter #(not= -1 (.indexOf filter-resources (clojure.core/get % :action))) resources)
                    resources)
         resources (if except?
-                   (filter #(= -1 (.indexOf filter-resources (clojure.core/get % :name))) resources)
+                   (filter #(= -1 (.indexOf filter-resources (clojure.core/get % :action))) resources)
                    resources)
         resources (map resource-route resources)]
     (vec (concat routes resources))))
@@ -461,3 +470,17 @@
        (mapcat expand-resource)
        (filter #(not (resource-route? %)))
        (vec)))
+
+
+(comment
+  (routes 
+   [:resource :todo]
+   [:resource :session :only [:index]])
+  
+  ( (url-for-routes
+     (routes
+      [:resource :todo]
+      [:resource :session :only [:index]])
+     )
+   :todo-edit {:todo-id 1})
+  )
